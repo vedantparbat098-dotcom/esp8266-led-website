@@ -1,330 +1,328 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>ESP8266 IoT Monitor</title>
+    <title>ESP8266 IoT Monitor</title>
 
-  <script type="module">
+    <script type="module">
 
-    import { initializeApp } from
-      "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { initializeApp } from
+            "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
-    import {
-      getDatabase,
-      ref,
-      set,
-      onValue
-    } from
-      "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+        import {
+            getDatabase,
+            ref,
+            set,
+            onValue
+        } from
+            "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-    import {
-      getAuth,
-      signInAnonymously
-    } from
-      "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        import {
+            getAuth,
+            signInAnonymously
+        } from
+            "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 
-    // ---------------- FIREBASE CONFIG ----------------
+        // ---------------- FIREBASE CONFIG ----------------
 
-    const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
-      authDomain: "esp8266-led-788a3.firebaseapp.com",
-      databaseURL: "https://esp8266-led-788a3-default-rtdb.firebaseio.com",
-      projectId: "esp8266-led-788a3",
-      storageBucket: "esp8266-led-788a3.firebasestorage.app",
-      messagingSenderId: "731884341469",
-      appId: "1:731884341469:web:b9f53e5e3b645beff0a8b334"
-    };
+        const firebaseConfig = {
+            apiKey: "AIzaSyAtyjfD2ipkqdntOKOKpqRILv6tTqs2ri0",
+            authDomain: "esp8266-led-788a3.firebaseapp.com",
+            databaseURL: "https://esp8266-led-788a3-default-rtdb.firebaseio.com",
+            projectId: "esp8266-led-788a3",
+            storageBucket: "esp8266-led-788a3.firebasestorage.app",
+            messagingSenderId: "731884341469",
+            appId: "1:731884341469:web:b9f53e5e3b645beff0a8b334"
+        };
 
 
-    // ---------------- FIREBASE INITIALIZATION ----------------
+        // ---------------- FIREBASE INITIALIZATION ----------------
 
-    const app = initializeApp(firebaseConfig);
+        const app = initializeApp(firebaseConfig);
 
-    const database = getDatabase(app);
+        const database = getDatabase(app);
 
-    const auth = getAuth(app);
+        const auth = getAuth(app);
 
 
-    // Firebase references
+        // Firebase references
 
-    const ledRef = ref(database, "led");
+        const ledRef = ref(database, "led");
 
-    const temperatureRef = ref(database, "temperature");
+        const temperatureRef = ref(database, "temperature");
 
-    const humidityRef = ref(database, "humidity");
+        const humidityRef = ref(database, "humidity");
 
 
-    // ---------------- AUTHENTICATION ----------------
+        // ---------------- AUTHENTICATION ----------------
 
-    signInAnonymously(auth)
+        signInAnonymously(auth)
 
-      .then(() => {
+            .then(() => {
 
-        console.log("Firebase authentication successful");
+                console.log("Firebase authentication successful");
 
 
-        // ---------------- LED STATUS ----------------
+                // ---------------- LED STATUS ----------------
 
-        onValue(ledRef, (snapshot) => {
+                onValue(ledRef, (snapshot) => {
 
-          const ledState = snapshot.val();
+                    const ledState = snapshot.val();
 
-          if (ledState === true) {
+                    if (ledState === true) {
 
-            document.getElementById("status").innerHTML =
-              "LED: ON";
+                        document.getElementById("status").innerHTML =
+                            "LED: ON";
 
-            document.getElementById("status").className = "on";
+                        document.getElementById("status").className = "on";
 
-          }
-          else {
+                    }
+                    else {
 
-            document.getElementById("status").innerHTML =
-              "LED: OFF";
+                        document.getElementById("status").innerHTML =
+                            "LED: OFF";
 
-            document.getElementById("status").className = "off";
+                        document.getElementById("status").className = "off";
 
-          }
+                    }
 
-        });
+                });
 
 
-        // ---------------- TEMPERATURE ----------------
+                // ---------------- TEMPERATURE ----------------
 
-        onValue(temperatureRef, (snapshot) => {
+                onValue(temperatureRef, (snapshot) => {
 
-          const temperature = snapshot.val();
+                    const temperature = snapshot.val();
 
-          if (temperature !== null) {
+                    if (temperature !== null) {
 
-            document.getElementById("temperature").innerHTML =
-              temperature.toFixed(1) + " °C";
+                        document.getElementById("temperature").innerHTML =
+                            temperature.toFixed(1) + " °C";
 
-          }
+                    }
 
-        });
+                });
 
 
-        // ---------------- HUMIDITY ----------------
+                // ---------------- HUMIDITY ----------------
 
-        onValue(humidityRef, (snapshot) => {
+                onValue(humidityRef, (snapshot) => {
 
-          const humidity = snapshot.val();
+                    const humidity = snapshot.val();
 
-          if (humidity !== null) {
+                    if (humidity !== null) {
 
-            document.getElementById("humidity").innerHTML =
-              humidity.toFixed(1) + " %";
+                        document.getElementById("humidity").innerHTML =
+                            humidity.toFixed(1) + " %";
 
-          }
+                    }
 
-        });
+                });
 
-      })
+            })
 
 
-      .catch((error) => {
+            .catch((error) => {
 
-        console.error("Authentication error:", error);
+                console.error("Authentication error:", error);
 
-        document.getElementById("status").innerHTML =
-          "Firebase connection error";
+                document.getElementById("status").innerHTML =
+                    "Firebase connection error";
 
-      });
+            });
 
 
-    // ---------------- LED ON ----------------
+        // ---------------- LED ON ----------------
 
-    window.ledON = function() {
+        window.ledON = function () {
 
-      set(ledRef, true)
+            set(ledRef, true)
 
-        .then(() => {
+                .then(() => {
 
-          console.log("LED ON");
+                    console.log("LED ON");
 
-        })
+                })
 
-        .catch((error) => {
+                .catch((error) => {
 
-          console.error("Error:", error);
+                    console.error("Error:", error);
 
-        });
+                });
 
-    };
+        };
 
 
-    // ---------------- LED OFF ----------------
+        // ---------------- LED OFF ----------------
 
-    window.ledOFF = function() {
+        window.ledOFF = function () {
 
-      set(ledRef, false)
+            set(ledRef, false)
 
-        .then(() => {
+                .then(() => {
 
-          console.log("LED OFF");
+                    console.log("LED OFF");
 
-        })
+                })
 
-        .catch((error) => {
+                .catch((error) => {
 
-          console.error("Error:", error);
+                    console.error("Error:", error);
 
-        });
+                });
 
-    };
+        };
 
-  </script>
+    </script>
 
 
-  <!-- ---------------- CSS ---------------- -->
+    <!-- ---------------- CSS ---------------- -->
 
-  <style>
+    <style>
+        body {
 
-    body {
+            margin: 0;
 
-      margin: 0;
+            font-family: Arial, sans-serif;
 
-      font-family: Arial, sans-serif;
+            background: #f2f2f2;
 
-      background: #f2f2f2;
+            display: flex;
 
-      display: flex;
+            justify-content: center;
 
-      justify-content: center;
+            align-items: center;
 
-      align-items: center;
+            min-height: 100vh;
 
-      min-height: 100vh;
+        }
 
-    }
 
+        .container {
 
-    .container {
+            background: white;
 
-      background: white;
+            width: 360px;
 
-      width: 360px;
+            padding: 30px;
 
-      padding: 30px;
+            border-radius: 15px;
 
-      border-radius: 15px;
+            text-align: center;
 
-      text-align: center;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
 
-      box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+        }
 
-    }
 
+        h1 {
 
-    h1 {
+            margin-bottom: 25px;
 
-      margin-bottom: 25px;
+        }
 
-    }
 
+        .sensor {
 
-    .sensor {
+            background: #f7f7f7;
 
-      background: #f7f7f7;
+            padding: 15px;
 
-      padding: 15px;
+            margin: 12px 0;
 
-      margin: 12px 0;
+            border-radius: 10px;
 
-      border-radius: 10px;
+            font-size: 20px;
 
-      font-size: 20px;
+            font-weight: bold;
 
-      font-weight: bold;
+        }
 
-    }
 
+        .sensor span {
 
-    .sensor span {
+            display: block;
 
-      display: block;
+            font-size: 28px;
 
-      font-size: 28px;
+            margin-top: 8px;
 
-      margin-top: 8px;
+        }
 
-    }
 
+        #status {
 
-    #status {
+            font-size: 24px;
 
-      font-size: 24px;
+            font-weight: bold;
 
-      font-weight: bold;
+            margin: 25px 0;
 
-      margin: 25px 0;
+        }
 
-    }
 
+        .on {
 
-    .on {
+            color: green;
 
-      color: green;
+        }
 
-    }
 
+        .off {
 
-    .off {
+            color: red;
 
-      color: red;
+        }
 
-    }
 
+        button {
 
-    button {
+            width: 120px;
 
-      width: 120px;
+            padding: 15px;
 
-      padding: 15px;
+            margin: 8px;
 
-      margin: 8px;
+            border: none;
 
-      border: none;
+            border-radius: 8px;
 
-      border-radius: 8px;
+            font-size: 18px;
 
-      font-size: 18px;
+            cursor: pointer;
 
-      cursor: pointer;
+        }
 
-    }
 
+        .onButton {
 
-    .onButton {
+            background: green;
 
-      background: green;
+            color: white;
 
-      color: white;
+        }
 
-    }
 
+        .offButton {
 
-    .offButton {
+            background: red;
 
-      background: red;
+            color: white;
 
-      color: white;
+        }
 
-    }
 
+        button:hover {
 
-    button:hover {
+            opacity: 0.8;
 
-      opacity: 0.8;
-
-    }
-
-
-  </style>
+        }
+    </style>
 
 </head>
 
@@ -332,67 +330,59 @@
 <body>
 
 
-  <div class="container">
+    <div class="container">
 
-    <h1>ESP8266 IoT Monitor</h1>
+        <h1>ESP8266 IoT Monitor</h1>
 
 
-    <!-- TEMPERATURE -->
+        <!-- TEMPERATURE -->
 
-    <div class="sensor">
+        <div class="sensor">
 
-      🌡 Temperature
+            🌡 Temperature
 
-      <span id="temperature">-- °C</span>
+            <span id="temperature">-- °C</span>
+
+        </div>
+
+
+        <!-- HUMIDITY -->
+
+        <div class="sensor">
+
+            💧 Humidity
+
+            <span id="humidity">-- %</span>
+
+        </div>
+
+
+        <!-- LED STATUS -->
+
+        <div id="status" class="off">
+
+            LED: OFF
+
+        </div>
+
+
+        <!-- BUTTONS -->
+
+        <button class="onButton" onclick="ledON()">
+
+            ON
+
+        </button>
+
+
+        <button class="offButton" onclick="ledOFF()">
+
+            OFF
+
+        </button>
+
 
     </div>
-
-
-    <!-- HUMIDITY -->
-
-    <div class="sensor">
-
-      💧 Humidity
-
-      <span id="humidity">-- %</span>
-
-    </div>
-
-
-    <!-- LED STATUS -->
-
-    <div id="status" class="off">
-
-      LED: OFF
-
-    </div>
-
-
-    <!-- BUTTONS -->
-
-    <button
-
-      class="onButton"
-
-      onclick="ledON()">
-
-      ON
-
-    </button>
-
-
-    <button
-
-      class="offButton"
-
-      onclick="ledOFF()">
-
-      OFF
-
-    </button>
-
-
-  </div>
 
 
 </body>
